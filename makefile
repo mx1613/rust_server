@@ -1,3 +1,6 @@
+check: 
+	cargo check
+
 lint: 
 	cargo clippy -- -D warnings
 	cargo fmt 
@@ -5,7 +8,7 @@ lint:
 audit: 
 	cargo audit
 
-build: # do this before tests for caching  
+build:
 	cargo build
 
 test:
