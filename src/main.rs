@@ -6,7 +6,7 @@ async fn greet(req: HttpRequest) -> impl Responder {
 }
 
 #[tokio::main]
-async fn main() -> Result<(),std::io::Error> {
+async fn main() -> Result<(), std::io::Error> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(greet))
@@ -16,4 +16,3 @@ async fn main() -> Result<(),std::io::Error> {
     .run()
     .await
 }
-

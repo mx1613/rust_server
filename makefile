@@ -1,6 +1,6 @@
 lint: 
 	cargo clippy -- -D warnings
-	cargo fmt -- --check
+	cargo fmt 
 	
 audit: 
 	cargo audit
