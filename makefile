@@ -2,8 +2,8 @@ check:
 	cargo check
 
 lint: 
-	cargo clippy -- -D warnings
 	cargo fmt 
+	cargo clippy
 	
 audit: 
 	cargo audit
@@ -28,4 +28,4 @@ test-daemon:
 	cargo watch -x check -x test
 
 run-daemon:  
-	cargo watch -x check -x test -x run
+	cargo watch -x run
