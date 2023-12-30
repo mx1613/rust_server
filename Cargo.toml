@@ -4,11 +4,12 @@ version = "0.1.0"
 authors = ["Michele Xiloyannis"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+path = "src/lib.rs"
 
 [[bin]]
-path = "src/main.rs"
 name = "rust_server"
+path = "src/main.rs"
 
 [dependencies]
 actix-web = "4"
