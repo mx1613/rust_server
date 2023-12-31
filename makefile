@@ -29,3 +29,7 @@ test-daemon:
 
 run-daemon:  
 	cargo watch -x run
+
+# Database
+init-db: 
+	SKIP_DOCKER=true ./scripts/init_db.sh

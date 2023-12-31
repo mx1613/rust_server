@@ -1,4 +1,4 @@
-use actix_web::StatusCode;
+use actix_web::http::StatusCode;
 use std::net::TcpListener;
 
 fn spawn_app() -> String {

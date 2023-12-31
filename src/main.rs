@@ -6,7 +6,7 @@ use rust_server::run;
 
 #[tokio::main]
 async fn main() -> Result<(), io::Error> {
-    let listener =
-        TcpListener::bind(SERVER_CONFIG.base_url).expect("Failed to bind ls");
+    let listener = TcpListener::bind(SERVER_CONFIG.base_url)
+        .expect("Failed to bind listener");
     run(listener)?.await
 }
