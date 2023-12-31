@@ -17,6 +17,11 @@ All notable changes to this project will be documented in this file.
 - Run fmt and then clippy, let fmt fix
 - Server config struct
 - Updated changelog
+- Updated changelog
+
+### Refactor
+
+- Server address as a parameter to the run function
 
 ### Testing
 
