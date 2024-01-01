@@ -1,6 +1,9 @@
-use actix_web::http::StatusCode;
 use std::net::TcpListener;
 
+use actix_web::http::StatusCode;
+use sqlx::{Connection, PgConnection};
+
+use rust_server::configuration::get_configuration;
 use rust_server::startup::run;
 
 fn spawn_app() -> String {
@@ -34,9 +37,15 @@ async fn health_check_happy_path() {
 async fn subscribe_happy_path() {
     // Arrange
     let address = spawn_app();
+    let configuration =
+        get_configuration().expect("Failed to read configuration");
+    let connection_string = configuration.database.connection_string();
+    let mut connection = PgConnection::connect(&connection_string)
+        .await
+        .expect("Failed to connect to Postgres.");
     let subscribe_endpoint = format!("{}/subscribe", address);
-    // Act
     let client = reqwest::Client::new();
+    // Act
     let response = client
         .post(&subscribe_endpoint)
         .header("Content-Type", "application/x-www-form-urlencoded")
@@ -48,6 +57,13 @@ async fn subscribe_happy_path() {
         );
     // Assert
     assert!(response.status().is_success());
+    let saved = sqlx::query!("SELECT email, name FROM subscriptions",)
+        .fetch_one(&mut connection)
+        .await
+        .expect("Failed to fetch saved subscription.");
+    
+    assert_eq!(saved.email, "john.doe@example.com");
+    assert_eq!(saved.name, "John Doe");
 }
 
 #[tokio::test]
