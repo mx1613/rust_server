@@ -27,10 +27,25 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+  
+      - name: Install sqlx-cli
+        run:
+            cargo install sqlx-cli
+              --version=${{ env.SQLX_VERSION }}
+              --features ${{ env.SQLX_FEATURES }}
+              --no-default-features
+              --locked
+  
+      - name: Install postgresql-client
+        run: sudo apt-get update && sudo apt-get install postgresql-client -y
+  
+      - name: Migrate database
+        run: chmod +x ./scripts/init_db.sh && SKIP_DOCKER=true ./scripts/init_db.sh
+
       - name: Enforce formatting
         run: cargo fmt --check
 
-      - name: Enforce linting
+      - name: Enforce style
         run: cargo clippy
         
   test:
