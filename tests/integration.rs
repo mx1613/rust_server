@@ -61,7 +61,7 @@ async fn subscribe_happy_path() {
         .fetch_one(&mut connection)
         .await
         .expect("Failed to fetch saved subscription.");
-    
+
     assert_eq!(saved.email, "john.doe@example.com");
     assert_eq!(saved.name, "John Doe");
 }
