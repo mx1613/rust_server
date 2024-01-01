@@ -1,9 +1,10 @@
 use std::net::TcpListener;
 
 use actix_web::http::StatusCode;
-use sqlx::{PgPool};
+use sqlx::{Connection, Executor, PgConnection, PgPool};
+use uuid::Uuid;
 
-use rust_server::configuration::get_configuration;
+use rust_server::configuration::{get_configuration, DatabaseSettings};
 use rust_server::startup::run;
 
 struct TestApp {
@@ -17,11 +18,10 @@ async fn spawn_app() -> TestApp {
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
-    let configuration =
+    let mut configuration =
         get_configuration().expect("Failed to read configuration.");
-    let db_pool = PgPool::connect(&configuration.database.connection_string())
-        .await
-        .expect("Failed to connect to Postgres.");
+    configuration.database.name = Uuid::new_v4().to_string();
+    let db_pool = configure_database(&configuration.database).await;
 
     let server =
         run(listener, db_pool.clone()).expect("Failed to spawn rust server.");
@@ -30,11 +30,36 @@ async fn spawn_app() -> TestApp {
     TestApp { address, db_pool }
 }
 
+pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
+    // create a new database
+    let mut connection =
+        PgConnection::connect(&config.connection_string_without_db())
+            .await
+            .expect("Failed to connect to Postgres.");
+
+    connection
+        .execute(format!(r#"CREATE DATABASE "{}";"#, config.name).as_str())
+        .await
+        .expect("Failed to create database.");
+
+    // migrate the database
+    let connection_pool = PgPool::connect(&config.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
+
+    sqlx::migrate!("./migrations")
+        .run(&connection_pool)
+        .await
+        .expect("Failed to migrate the database.");
+
+    connection_pool
+}
+
 #[tokio::test]
 async fn health_check_happy_path() {
     // Arrange
-    let test_app = spawn_app().await;
-    let health_check_endpoint = format!("{}/health_check", test_app.address);
+    let app = spawn_app().await;
+    let health_check_endpoint = format!("{}/health_check", app.address);
     // Act
     let client = reqwest::Client::new();
     let response = client
@@ -96,11 +121,8 @@ async fn subscribe_bad_requests() {
             .send()
             .await
             .expect(
-                format!(
-                    "Failed to execute POST request on {}.",
-                    app.address
-                )
-                .as_str(),
+                format!("Failed to execute POST request on {}.", app.address)
+                    .as_str(),
             );
         // Assert
         assert_eq!(
