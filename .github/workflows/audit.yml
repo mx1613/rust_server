@@ -1,4 +1,4 @@
-name: 🔐Security audit
+name: Security audit
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -13,5 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: taiki-e/install-action@cargo-deny
+      
       - name: Scan for vulnerabilities
         run: cargo deny check advisories
