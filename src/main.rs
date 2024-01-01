@@ -1,6 +1,8 @@
 use std::io;
 use std::net::TcpListener;
 
+use sqlx::PgPool;
+
 use rust_server::configuration::get_configuration;
 use rust_server::startup::run;
 
@@ -13,7 +15,9 @@ async fn main() -> Result<(), io::Error> {
         configuration.application.host, configuration.application.port
     )
     .to_string();
-    let listener =
-        TcpListener::bind(address).expect("Failed to bind listener");
-    run(listener)?.await
+    let listener = TcpListener::bind(address).expect("Failed to bind listener");
+    let db_pool = PgPool::connect(&configuration.database.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
+    run(listener, db_pool)?.await
 }

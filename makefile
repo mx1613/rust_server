@@ -32,4 +32,4 @@ run-daemon:
 
 # Database
 init-db: 
-	SKIP_DOCKER=true ./scripts/init_db.sh
+	 ./scripts/init_db.sh
