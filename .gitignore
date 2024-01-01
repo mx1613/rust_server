@@ -1,7 +1,7 @@
 /target
 .idea
 tags
-
+*.profraw
 
 # Notes
 notes.md

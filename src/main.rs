@@ -1,19 +1,23 @@
-use actix_web::{web, App, HttpRequest, HttpServer, Responder};
+use std::io;
+use std::net::TcpListener;
 
-async fn greet(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("World");
-    format!("Hello {}!", &name)
-}
+use sqlx::PgPool;
+
+use rust_server::configuration::get_configuration;
+use rust_server::startup::run;
 
 #[tokio::main]
-async fn main() -> Result<(),std::io::Error> {
-    HttpServer::new(|| {
-        App::new()
-            .route("/", web::get().to(greet))
-            .route("/{name}", web::get().to(greet))
-    })
-    .bind("127.0.0.1:8000")?
-    .run()
-    .await
+async fn main() -> Result<(), io::Error> {
+    let configuration =
+        get_configuration().expect("Failed to read configuration.");
+    let address = format!(
+        "{}:{}",
+        configuration.application.host, configuration.application.port
+    )
+    .to_string();
+    let listener = TcpListener::bind(address).expect("Failed to bind listener");
+    let db_pool = PgPool::connect(&configuration.database.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
+    run(listener, db_pool)?.await
 }
-

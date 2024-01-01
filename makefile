@@ -1,11 +1,14 @@
+check: 
+	cargo check
+
 lint: 
-	cargo clippy -- -D warnings
-	cargo fmt -- --check
+	cargo fmt 
+	cargo clippy
 	
 audit: 
 	cargo audit
 
-build: # do this before tests for caching  
+build:
 	cargo build
 
 test:
@@ -25,4 +28,8 @@ test-daemon:
 	cargo watch -x check -x test
 
 run-daemon:  
-	cargo watch -x check -x test -x run
+	cargo watch -x run
+
+# Database
+init-db: 
+	 ./scripts/init_db.sh
