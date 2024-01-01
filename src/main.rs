@@ -1,8 +1,8 @@
 use std::io;
 use std::net::TcpListener;
 
-use rust_server::config::SERVER_CONFIG;
-use rust_server::run;
+use rust_server::configuration::SERVER_CONFIG;
+use rust_server::startup::run;
 
 #[tokio::main]
 async fn main() -> Result<(), io::Error> {

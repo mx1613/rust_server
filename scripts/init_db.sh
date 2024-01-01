@@ -40,7 +40,6 @@ then
       -d \
       --name "postgres_$(date '+%s')" \
       postgres -N 1000
-      # ^ Increased maximum number of connections for testing purposes
 fi
 
 # Keep pinging Postgres until it's ready to accept commands

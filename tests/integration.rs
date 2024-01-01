@@ -1,12 +1,13 @@
 use actix_web::http::StatusCode;
 use std::net::TcpListener;
 
+use rust_server::startup::run;
+
 fn spawn_app() -> String {
     let listener =
         TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port.");
     let port = listener.local_addr().unwrap().port();
-    let server =
-        rust_server::run(listener).expect("Failed to spawn rust server.");
+    let server = run(listener).expect("Failed to spawn rust server.");
     let _ = tokio::spawn(server);
 
     format!("http://127.0.0.1:{}", port)
