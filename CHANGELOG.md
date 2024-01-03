@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Configuration management setup
 - Subscribe endpoint inserts to database
 - Added basic logging to the app
+- Replaced logging with tracing
 
 ### Miscellaneous Tasks
 
