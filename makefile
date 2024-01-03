@@ -18,7 +18,7 @@ cov:
 	cargo tarpaulin 
 
 run: 
-	cargo run
+	RUST_LOG=info cargo run
 
 changelog: 
 	git cliff --output CHANGELOG.md
