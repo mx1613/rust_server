@@ -20,7 +20,7 @@ async fn main() -> Result<(), io::Error> {
     )
     .to_string();
     let listener = TcpListener::bind(address).expect("Failed to bind listener");
-    
+
     let db_pool = PgPool::connect(&configuration.database.connection_string())
         .await
         .expect("Failed to connect to Postgres.");

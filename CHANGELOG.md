@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Health check endpoint
 - Configuration management setup
 - Subscribe endpoint inserts to database
+- Added basic logging to the app
 
 ### Miscellaneous Tasks
 
@@ -32,6 +33,10 @@ All notable changes to this project will be documented in this file.
 - More efficient actions
 - Do not break action with warning
 - Migration for type of timestamp
+- Updated changelog
+- Add back db setup in linting action job
+- Emoji in security audit workflow
+- Forgotten postgres service in the linting step
 
 ### Refactor
 
