@@ -11,14 +11,19 @@ audit:
 build:
 	cargo build
 
+TEST_LOG ?= false
 test:
-	cargo test
+	if [ "$(TEST_LOG)" = "true" ]; then \
+		cargo test | bunyan; \
+	else \
+		cargo test; \
+	fi
 
 cov: 
 	cargo tarpaulin 
 
 run: 
-	RUST_LOG=info cargo run
+	cargo run
 
 changelog: 
 	git cliff --output CHANGELOG.md
